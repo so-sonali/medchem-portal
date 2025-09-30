@@ -1,211 +1,69 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Aspirin — Narrative Med Chem</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Bootstrap + Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-  <!-- 3Dmol for molecules -->
-  <script src="https://unpkg.com/3dmol/build/3Dmol-min.js"></script>
-
-  <style>
-    body{background:#0b0f19;color:#e9eef5}
-    .hero{background: radial-gradient(1200px 600px at 20% -20%, #1b2852, transparent),
-                       radial-gradient(800px 400px at 100% 0, #16233f, transparent);}
-    .glass{background: rgba(255,255,255,0.06); backdrop-filter: blur(6px);
-           border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;}
-    .act-title{letter-spacing:.06em; text-transform:uppercase; font-weight:700; color:#98c1ff}
-    .viewer{height:420px;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
-    .section{scroll-margin-top:80px}
-    .footer{color:#a7b1c2}
-    a.link{color:#9fe7ff; text-decoration:none}
-    a.link:hover{text-decoration:underline}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MedChem Portal — Medicine Shelf</title>
+<style>
+  :root{
+    --discovery:#00ff88; --danger:#ff4757; --mystery:#7c3aed; --success:#0ea5e9; --bg:#0b1220; --glass:rgba(255,255,255,0.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 70% -20%, #1b2a55 0%, #0b1220 40%, #050912 100%); color:#e8f1ff; font:16px/1.5 system-ui,Segoe UI,Inter,Arial}
+  header{padding:28px 24px; display:flex; align-items:center; justify-content:space-between}
+  .brand{font-weight:800; letter-spacing:.3px; font-size:20px}
+  .hero{display:grid; place-items:center; padding:18px}
+  .card{width:min(980px, 94vw); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.45)}
+  h1{margin:6px 0 10px; font-size:28px}
+  p.lede{opacity:.9; margin:0 0 14px}
+  .shelf{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-top:18px}
+  .bottle{position:relative; padding:18px; border-radius:18px; background:var(--glass); border:1px solid rgba(255,255,255,.08); cursor:pointer; transition:transform .15s ease, box-shadow .15s ease}
+  .bottle:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .pill{width:58px; height:58px; border-radius:16px; background:linear-gradient(135deg,#ffffff,#e6f7ff); box-shadow:inset 0 0 0 2px rgba(0,0,0,.05)}
+  .tag{margin-top:10px; font-weight:700}
+  .badge{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:rgba(0,255,136,.12); color:var(--discovery); font-weight:600; font-size:12px}
+  footer{opacity:.6; text-align:center; padding:30px 0 40px}
+  a{color:inherit; text-decoration:none}
+</style>
 </head>
 <body>
-
-  <!-- NAV -->
-  <nav class="navbar navbar-dark navbar-expand-md bg-dark sticky-top">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-capsule"></i> Everyday Pharmacy</a>
-      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
-      <div id="nav" class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#act1">Act I</a></li>
-          <li class="nav-item"><a class="nav-link" href="#act2">Act II</a></li>
-          <li class="nav-item"><a class="nav-link" href="#act3">Act III</a></li>
-          <li class="nav-item"><a class="nav-link" href="#act4">Act IV</a></li>
-          <li class="nav-item"><a class="nav-link" href="#notes">Notes</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- HERO -->
-  <header class="hero py-5">
-    <div class="container">
-      <div class="row align-items-center g-4">
-        <div class="col-lg-7">
-          <h1 class="display-5 fw-bold">Aspirin — The Accidental Wonder Drug</h1>
-          <p class="lead">Watch the problem. Make the fix. See the consequences.</p>
-          <div class="d-flex gap-2 flex-wrap">
-            <a href="#act1" class="btn btn-primary btn-lg"><i class="bi bi-play-fill"></i> Start the story</a>
-            <a class="btn btn-outline-light btn-lg" href="https://so-sonali.github.io/medchem-hub/aspirin/learn.html" target="_blank">
-              <i class="bi bi-journal-bookmark"></i> Scientific notes
-            </a>
-          </div>
-        </div>
-        <div class="col-lg-5">
-          <div id="aspirin3d" class="viewer glass"></div>
-        </div>
-      </div>
-    </div>
+  <header>
+    <div class="brand">MedChem Portal</div>
+    <div class="badge">🎯 Learn by Discovery</div>
   </header>
 
-  <!-- ACT I -->
-  <section id="act1" class="section py-5">
-    <div class="container">
-      <p class="act-title">Act I — The Problem</p>
-      <div class="glass p-4">
-        <h2 class="h3">Relief… and pain</h2>
-        <p>Salicylic acid eases pain, but its phenolic <strong>–OH</strong> irritates the stomach.</p>
-        <p class="text-secondary">We’ll fix it in Act II.</p>
-      </div>
-    </div>
-  </section>
+  <section class="hero">
+    <div class="card">
+      <h1>Your medicine cabinet is a chemistry lab</h1>
+      <p class="lede">Pick a bottle. Time-travel into its discovery. Tinker with the molecule. Watch the consequences.</p>
 
-  <!-- ACT II -->
-<section id="act2" class="section py-5">
-  <div class="container">
-    <p class="act-title">Act II — The Breakthrough</p>
-    <div class="glass p-4">
-      <h2 class="h3">Hoffmann’s choice (1897)</h2>
-      <p class="mb-3">Pick a path and watch the consequences.</p>
-      <div class="d-flex flex-wrap gap-2">
-        <button class="btn btn-outline-info choice-btn" data-choice="dose">Increase dose</button>
-        <button class="btn btn-outline-warning choice-btn" data-choice="buffer">Add a buffer</button>
-        <button class="btn btn-success choice-btn" data-choice="acetylate">Acetylate phenolic –OH</button>
-      </div>
-      <div id="choiceResult" class="mt-3 small text-secondary"></div>
-    </div>
-  </div>
-</section>
+      <div class="shelf">
+        <a class="bottle" href="./aspirin.html" title="Aspirin">
+          <div class="pill" aria-hidden="true"></div>
+          <div class="tag">Aspirin</div>
+          <small>COX inhibitor • pain • fever</small>
+        </a>
 
-  <!-- ACT III -->
-<section id="act3" class="section py-5">
-  <div class="container">
-    <p class="act-title">Act III — The Consequences</p>
-    <div class="glass p-4">
-      <h2 class="h4">Outcome</h2>
-      <div id="pathOutcome" class="p-3 border rounded-3">
-        <em>Make a choice in Act II to see what happens here.</em>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-  <!-- ACT IV -->
-  <section id="act4" class="section py-5">
-    <div class="container">
-      <p class="act-title">Act IV — Reflection</p>
-      <div class="glass p-4">
-        <h2 class="h4">Ethics & impact</h2>
-        <ul class="mb-0">
-          <li>Access vs. patents for essential medicines</li>
-          <li>Population bleeding risk vs. cardiovascular benefit</li>
-          <li>How a cheap pill changed global health</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- NOTES -->
-  <section id="notes" class="section pb-5">
-    <div class="container">
-      <p class="act-title">Notes & Deeper Study</p>
-      <div class="glass p-4">
-        <p class="mb-1">Read the structured notes:</p>
-        <a class="link" href="https://so-sonali.github.io/medchem-hub/aspirin/learn.html" target="_blank">Aspirin — learn page ↗</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer py-5">
-    <div class="container small">
-      <div class="row g-3">
-        <div class="col-md-8">
-          <div class="glass p-3">
-            <strong>Narrative Med Chem.</strong> Stories → decisions → mechanisms → ethics.
-          </div>
+        <div class="bottle" title="Coming soon">
+          <div class="pill" style="background:linear-gradient(135deg,#ffd9d9,#ffe6e6)"></div>
+          <div class="tag">Ibuprofen</div>
+          <small>Coming soon</small>
         </div>
-        <div class="col-md-4 text-md-end">
-          <div class="glass p-3">Educational content only. Not medical advice.</div>
+
+        <div class="bottle" title="Coming soon">
+          <div class="pill" style="background:linear-gradient(135deg,#e4ffe6,#d9ffe0)"></div>
+          <div class="tag">Penicillin</div>
+          <small>Coming soon</small>
+        </div>
+
+        <div class="bottle" title="Coming soon">
+          <div class="pill" style="background:linear-gradient(135deg,#fff3d6,#ffe9b8)"></div>
+          <div class="tag">Insulin</div>
+          <small>Coming soon</small>
         </div>
       </div>
     </div>
-  </footer>
-
-  <!-- Scripts -->
-  <script>
-    // Load PubChem Aspirin (CID 2244) in 3D
-    (async () => {
-      try {
-        const el = document.getElementById("aspirin3d");
-        const viewer = $3Dmol.createViewer(el, {backgroundColor: "white"});
-        const resp = await fetch("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/2244/SDF?record_type=3d");
-        const sdf = await resp.text();
-        viewer.addModel(sdf, "sdf");
-        viewer.setStyle({}, {stick:{radius:0.15}, sphere:{scale:0.22}});
-        viewer.addStyle({elem:"O"}, {sphere:{scale:0.26}}); // highlight oxygens
-        viewer.zoomTo(); viewer.render();
-      } catch(e) {
-        console.error(e);
-      }
-    })();
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-  // Mini simulator: show consequence text with a subtle animation
-  const messages = {
-    dose: {
-      act2: "Higher dose → faster relief but GI irritation ↑.",
-      act3: "<strong>Path: Raise dose</strong><br>Efficacy ↑ short term, bleeding risk ↑; poor historical strategy."
-    },
-    buffer: {
-      act2: "Buffer lowers perceived acidity but can reduce reliable absorption.",
-      act3: "<strong>Path: Buffer</strong><br>Tolerability slightly better, bioavailability inconsistent; limited success."
-    },
-    acetylate: {
-      act2: "Acetylation masks the phenolic –OH → tolerability ↑ while preserving efficacy. This becomes aspirin.",
-      act3: "<strong>Path: Acetylate –OH</strong><br>Blockbuster adoption, global impact; introduces antiplatelet effects."
-    }
-  };
-
-  function flash(el) {
-    el.style.opacity = 0;
-    el.style.transition = "opacity .35s ease";
-    requestAnimationFrame(()=>{ el.style.opacity = 1; });
-  }
-
-  document.querySelectorAll('[data-choice]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const choice = btn.dataset.choice;
-      const act2Box = document.getElementById('choiceResult');
-      const act3Box = document.getElementById('pathOutcome');
-      act2Box.innerHTML = messages[choice].act2;
-      act3Box.innerHTML = messages[choice].act3;
-      flash(act2Box); flash(act3Box);
-      // smooth scroll to Act III to feel like a "scene change"
-      document.getElementById('act3').scrollIntoView({behavior:'smooth', block:'start'});
-    });
-  });
-</script>
-
+  </section>
+  <footer>© 2025 MedChem Portal</footer>
 </body>
 </html>
