@@ -3,67 +3,321 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MedChem Portal — Medicine Shelf</title>
+<title>MedChem Portal — Dive into the stories behind your medicines</title>
+<meta name="description" content="Learn medicinal chemistry through interactive, character-driven stories. No textbooks required." />
 <style>
   :root{
-    --discovery:#00ff88; --danger:#ff4757; --mystery:#7c3aed; --success:#0ea5e9; --bg:#0b1220; --glass:rgba(255,255,255,0.08);
+    --bg:#0b1220; --bg2:#0a1020; --glass:rgba(255,255,255,.06); --stroke:rgba(255,255,255,.12);
+    --text:#eaf2ff; --muted:#a9b8ff; --accent:#00ff88; --warn:#ff4757; --info:#0ea5e9; --mystery:#7c3aed;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:radial-gradient(1200px 600px at 70% -20%, #1b2a55 0%, #0b1220 40%, #050912 100%); color:#e8f1ff; font:16px/1.5 system-ui,Segoe UI,Inter,Arial}
-  header{padding:28px 24px; display:flex; align-items:center; justify-content:space-between}
-  .brand{font-weight:800; letter-spacing:.3px; font-size:20px}
-  .hero{display:grid; place-items:center; padding:18px}
-  .card{width:min(980px, 94vw); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.45)}
-  h1{margin:6px 0 10px; font-size:28px}
-  p.lede{opacity:.9; margin:0 0 14px}
-  .shelf{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-top:18px}
-  .bottle{position:relative; padding:18px; border-radius:18px; background:var(--glass); border:1px solid rgba(255,255,255,.08); cursor:pointer; transition:transform .15s ease, box-shadow .15s ease}
-  .bottle:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,0,0,.35)}
-  .pill{width:58px; height:58px; border-radius:16px; background:linear-gradient(135deg,#ffffff,#e6f7ff); box-shadow:inset 0 0 0 2px rgba(0,0,0,.05)}
-  .tag{margin-top:10px; font-weight:700}
-  .badge{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:rgba(0,255,136,.12); color:var(--discovery); font-weight:600; font-size:12px}
-  footer{opacity:.6; text-align:center; padding:30px 0 40px}
+  html,body{margin:0; height:100%; background:radial-gradient(1200px 600px at 70% -20%, #1b2a55 0%, var(--bg) 40%, #050912 100%); color:var(--text); font:16px/1.55 system-ui,Segoe UI,Inter,Arial}
   a{color:inherit; text-decoration:none}
+  img{max-width:100%; display:block}
+  .container{max-width:1200px; margin:0 auto; padding:0 20px}
+
+  /* Header */
+  header{position:sticky; top:0; z-index:20; backdrop-filter:blur(6px); background:linear-gradient(180deg, rgba(10,16,32,.85), rgba(10,16,32,.5)); border-bottom:1px solid var(--stroke)}
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+  .brand{font-weight:800; letter-spacing:.3px}
+  .nav-links{display:flex; gap:16px; align-items:center}
+  .btn{appearance:none; border:none; cursor:pointer; padding:10px 14px; border-radius:12px; color:#fff; background:var(--glass); border:1px solid var(--stroke)}
+  .btn.primary{background:linear-gradient(180deg,#1a7b4a,#13633c); border-color:#0d4e2e}
+  .btn.light{background:rgba(255,255,255,.08)}
+  .ghost{opacity:.8}
+
+  /* HERO */
+  .hero{position:relative; overflow:hidden}
+  .hero-inner{display:grid; grid-template-columns:1.1fr .9fr; gap:24px; align-items:center; padding:40px 0 28px}
+  .kicker{color:var(--muted); text-transform:uppercase; font-size:12px; letter-spacing:.14em}
+  h1{font-size:36px; line-height:1.15; margin:8px 0 10px}
+  .lede{opacity:.95; margin:0 0 16px}
+  .cta{display:flex; gap:12px; flex-wrap:wrap}
+
+  /* Hero animation card */
+  .card{background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border:1px solid var(--stroke); border-radius:20px; padding:18px; box-shadow:0 20px 60px rgba(0,0,0,.45)}
+  .anim{position:relative; height:330px; border-radius:16px; overflow:hidden; background:linear-gradient(180deg, rgba(124,58,237,.14), rgba(14,165,233,.12))}
+  .cabinet{position:absolute; inset:0; display:grid; place-items:center}
+  .shelves{width:88%; height:72%; border-radius:12px; border:1px solid var(--stroke); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); box-shadow:inset 0 8px 40px rgba(0,0,0,.25); position:relative}
+  .pill{position:absolute; width:54px; height:54px; border-radius:14px; background:linear-gradient(135deg,#ffffff,#e6f7ff); box-shadow:0 8px 20px rgba(0,0,0,.25)}
+  .pill.glow{box-shadow:0 0 18px rgba(0,255,136,.8), 0 8px 20px rgba(0,0,0,.25)}
+  .sam{position:absolute; bottom:8%; left:4%; width:78px; height:78px; border-radius:16px; background:
+        radial-gradient(30px 30px at 30% 30%, #ffd6a8, #ffc07a),
+        linear-gradient(180deg, #ffe2bf, #ffcf8b); box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .sam::after{content:"🧪"; position:absolute; right:-10px; bottom:-10px; font-size:24px}
+  /* Simple loop: Sam opens cabinet, grabs glowing aspirin */
+  @keyframes doorPulse { 0%{transform:scale(1)} 50%{transform:scale(1.01)} 100%{transform:scale(1)}}
+  @keyframes pillPulse { 0%{transform:translateY(0)} 50%{transform:translateY(-6px)} 100%{transform:translateY(0)}}
+  @keyframes handMove { 0%{transform:translateX(0)} 40%{transform:translateX(90px)} 60%{transform:translateX(90px) translateY(-4px)} 100%{transform:translateX(0)}}
+  .shelves{animation:doorPulse 4s ease-in-out infinite}
+  .pillA{left:16%; top:18%}
+  .pillB{left:44%; top:18%}
+  .pillC{left:72%; top:18%}
+  .pillD{left:16%; top:58%}
+  .pillE{left:44%; top:58%}
+  .pillF{left:72%; top:58%}
+  .pillA.glow,.pillE.glow{animation:pillPulse 2.8s ease-in-out infinite}
+  .sam{animation:handMove 4.5s ease-in-out infinite}
+
+  /* LIBRARY GRID */
+  section{scroll-margin-top:80px}
+  .section{padding:36px 0}
+  .sec-title{font-size:22px; margin:0 0 14px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px}
+  .card-drug{position:relative; padding:16px; border-radius:18px; background:var(--glass); border:1px solid var(--stroke); transition:transform .15s ease, box-shadow .15s ease, border-color .15s}
+  .card-drug:hover{transform:translateY(-3px); box-shadow:0 14px 30px rgba(0,0,0,.35); border-color:rgba(0,255,136,.35)}
+  .mol-shape{width:58px; height:58px; border-radius:18px; background:linear-gradient(135deg, #dfe9ff, #eef5ff)}
+  .drug-name{margin-top:8px; font-weight:700}
+  .teaser{font-size:13px; color:var(--muted); margin-top:4px; min-height:34px}
+  .chev{position:absolute; right:12px; bottom:12px; font-weight:700; opacity:.8}
+
+  /* CHARACTER INTRO */
+  .intro{display:grid; grid-template-columns:92px 1fr; gap:14px; align-items:center}
+  .sam-circle{width:82px; height:82px; border-radius:50%; background:
+    radial-gradient(30px 30px at 30% 30%, #ffd6a8, #ffc07a),
+    linear-gradient(180deg, #ffe2bf, #ffcf8b); box-shadow:0 10px 24px rgba(0,0,0,.35); position:relative}
+  .sam-circle::after{content:"🧪"; position:absolute; right:-8px; bottom:-10px}
+
+  /* JOURNEY TIMELINE */
+  .timeline{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+  .step{display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px; border-radius:14px; background:var(--glass); border:1px solid var(--stroke); cursor:pointer}
+  .step:hover{border-color:rgba(14,165,233,.35)}
+
+  /* DEMO */
+  .demo{display:grid; grid-template-columns:1.2fr .8fr; gap:16px; align-items:center}
+  .demo-vid{height:260px; border-radius:14px; background:linear-gradient(180deg, rgba(124,58,237,.18), rgba(14,165,233,.18)); border:1px solid var(--stroke); display:grid; place-items:center}
+  .demo-vid .fake{width:84%; height:70%; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border:1px dashed var(--stroke); display:grid; place-items:center; color:var(--muted)}
+  .caption{font-size:13px; color:var(--muted); margin-top:6px}
+
+  /* TESTIMONIALS */
+  .marquee{display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:6px}
+  .quote{min-width:280px; scroll-snap-align:start; padding:14px; border-radius:14px; background:var(--glass); border:1px solid var(--stroke)}
+  .metric{display:inline-block; margin-right:10px; padding:6px 10px; border-radius:999px; background:rgba(0,255,136,.12); color:var(--accent); font-weight:700; font-size:13px}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--stroke); margin-top:30px}
+  .footer-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:14px; padding:22px 0}
+  .fcol a{display:block; margin:6px 0; color:var(--muted)}
+
+  /* PARALLAX */
+  .parallax{position:absolute; inset:0; pointer-events:none; background:radial-gradient(800px 300px at 60% -10%, rgba(124,58,237,.15), transparent 60%)}
+
+  /* ONBOARDING OVERLAY */
+  .overlay{position:fixed; inset:0; background:rgba(5,9,18,.8); display:none; align-items:center; justify-content:center; z-index:40}
+  .tour{width:min(640px,92vw); background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border:1px solid var(--stroke); border-radius:16px; padding:18px}
+  .tour h3{margin:0 0 8px}
+  .steps{display:grid; gap:8px}
+  .tour .actions{display:flex; gap:10px; justify-content:flex-end; margin-top:12px}
+
+  /* RESPONSIVE */
+  @media (max-width: 960px){
+    .hero-inner{grid-template-columns:1fr; padding:22px 0}
+    .demo{grid-template-columns:1fr}
+    .footer-grid{grid-template-columns:repeat(2,1fr)}
+  }
 </style>
 </head>
 <body>
+  <!-- Header -->
   <header>
-    <div class="brand">MedChem Portal</div>
-    <div class="badge">🎯 Learn by Discovery</div>
+    <div class="container nav">
+      <div class="brand">MedChem Portal</div>
+      <nav class="nav-links">
+        <a class="ghost" href="#how">How It Works</a>
+        <a class="ghost" href="#library">Drugs</a>
+        <a class="ghost" href="#research">Research</a>
+        <a class="btn light" href="#demo">Quick Demo</a>
+      </nav>
+    </div>
   </header>
 
+  <!-- Parallax accent -->
+  <div class="parallax" aria-hidden="true"></div>
+
+  <!-- HERO -->
   <section class="hero">
-    <div class="card">
-      <h1>Your medicine cabinet is a chemistry lab</h1>
-      <p class="lede">Pick a bottle. Time-travel into its discovery. Tinker with the molecule. Watch the consequences.</p>
-
-      <div class="shelf">
-        <a class="bottle" href="./aspirin.html" title="Aspirin">
-          <div class="pill" aria-hidden="true"></div>
-          <div class="tag">Aspirin</div>
-          <small>COX inhibitor • pain • fever</small>
-        </a>
-
-        <div class="bottle" title="Coming soon">
-          <div class="pill" style="background:linear-gradient(135deg,#ffd9d9,#ffe6e6)"></div>
-          <div class="tag">Ibuprofen</div>
-          <small>Coming soon</small>
+    <div class="container hero-inner">
+      <div>
+        <div class="kicker">Interactive molecular stories</div>
+        <h1>Dive into the stories behind your medicines — no textbooks required.</h1>
+        <p class="lede">Meet Sam, your time-traveling lab partner. Open the cabinet, jump to discovery labs, and solve real molecular puzzles to understand how drugs work.</p>
+        <div class="cta">
+          <a class="btn primary" href="./aspirin.html">Start the Journey</a>
+          <a class="btn light" href="#library">Browse Medicines</a>
         </div>
+      </div>
 
-        <div class="bottle" title="Coming soon">
-          <div class="pill" style="background:linear-gradient(135deg,#e4ffe6,#d9ffe0)"></div>
-          <div class="tag">Penicillin</div>
-          <small>Coming soon</small>
-        </div>
-
-        <div class="bottle" title="Coming soon">
-          <div class="pill" style="background:linear-gradient(135deg,#fff3d6,#ffe9b8)"></div>
-          <div class="tag">Insulin</div>
-          <small>Coming soon</small>
+      <div class="card">
+        <div class="anim" aria-label="Looping animation of Sam opening cabinet and grabbing a glowing aspirin">
+          <div class="cabinet">
+            <div class="shelves">
+              <div class="pill pillA glow" title="Aspirin"></div>
+              <div class="pill pillB"></div>
+              <div class="pill pillC"></div>
+              <div class="pill pillD"></div>
+              <div class="pill pillE glow"></div>
+              <div class="pill pillF"></div>
+            </div>
+            <div class="sam" title="Sam"></div>
+          </div>
         </div>
       </div>
     </div>
   </section>
-  <footer>© 2025 MedChem Portal</footer>
+
+  <!-- Character Introduction -->
+  <section class="section" id="sam">
+    <div class="container card">
+      <div class="intro">
+        <div class="sam-circle" id="samPortrait" title="Click for Sam’s backstory"></div>
+        <div>
+          <strong>Meet Sam, your time-traveling lab partner</strong>
+          <p class="lede" style="margin:6px 0 0">Sam guides you into historical labs, asks smart questions, and celebrates breakthroughs with you. Click the portrait to peek at Sam’s backstory.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Journey Steps -->
+  <section class="section" id="how">
+    <div class="container">
+      <h2 class="sec-title">Your journey, visualized</h2>
+      <div class="timeline">
+        <a class="step" href="#problem"><div>🔍</div><div>The Problem</div></a>
+        <a class="step" href="#breakthrough"><div>⚗️</div><div>The Breakthrough</div></a>
+        <a class="step" href="#consequences"><div>🎮</div><div>The Consequences</div></a>
+        <a class="step" href="#reflection"><div>💭</div><div>The Reflection</div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visual Drug Library Grid -->
+  <section class="section" id="library">
+    <div class="container">
+      <h2 class="sec-title">Browse medicines</h2>
+      <div class="grid">
+        <a class="card-drug" href="./aspirin.html" title="Aspirin">
+          <div class="mol-shape"></div>
+          <div class="drug-name">Aspirin</div>
+          <div class="teaser">Savvy prodrug that tamed stomach pain.</div>
+          <div class="chev">Learn more ›</div>
+        </a>
+        <div class="card-drug" title="Penicillin (coming soon)">
+          <div class="mol-shape" style="background:linear-gradient(135deg,#e4ffe6,#d9ffe0)"></div>
+          <div class="drug-name">Penicillin</div>
+          <div class="teaser">Accidental mold, microbe-slaying ring.</div>
+          <div class="chev">Coming soon</div>
+        </div>
+        <div class="card-drug" title="Imatinib (coming soon)">
+          <div class="mol-shape" style="background:linear-gradient(135deg,#fff3d6,#ffe9b8)"></div>
+          <div class="drug-name">Imatinib</div>
+          <div class="teaser">Targeted switch-off for rogue kinases.</div>
+          <div class="chev">Coming soon</div>
+        </div>
+        <div class="card-drug" title="Thalidomide (coming soon)">
+          <div class="mol-shape" style="background:linear-gradient(135deg,#ffd9d9,#ffe6e6)"></div>
+          <div class="drug-name">Thalidomide</div>
+          <div class="teaser">History’s cautionary tale, rediscovered.</div>
+          <div class="chev">Coming soon</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Demo -->
+  <section class="section" id="demo">
+    <div class="container demo card">
+      <div>
+        <div class="demo-vid">
+          <div class="fake">15s demo placeholder (Sam + Hoffmann + acetyl drag)</div>
+        </div>
+        <div class="caption">Watch how you’ll jump into Hoffmann’s lab to solve real molecular puzzles.</div>
+      </div>
+      <div>
+        <h3 style="margin:0 0 8px">What you’ll do</h3>
+        <ul style="margin:0; padding-left:18px">
+          <li>Open the cabinet, pick a medicine, and time-travel to its discovery.</li>
+          <li>Manipulate molecules and see instant consequences.</li>
+          <li>Unlock badges by solving design and safety challenges.</li>
+        </ul>
+        <div class="cta" style="margin-top:12px">
+          <a class="btn primary" href="./aspirin.html">Start with Aspirin</a>
+          <a class="btn light" href="#library">Explore the Library</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials & Metrics -->
+  <section class="section" id="research">
+    <div class="container">
+      <h2 class="sec-title">Impact from early testers</h2>
+      <div class="marquee">
+        <div class="quote">“I actually understood SAR for the first time.”</div>
+        <div class="quote">“My 14-year-old daughter loved the aspirin game.”</div>
+        <div class="quote">“Way better than reading a chapter. I could feel the decisions.”</div>
+      </div>
+      <div style="margin-top:10px">
+        <span class="metric">95% would choose this over a textbook</span>
+        <span class="metric">4x increase in concept retention (pilot)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="fcol"><strong>About</strong><a href="#how">How it works</a><a href="#sam">Meet Sam</a></div>
+      <div class="fcol"><strong>Drugs</strong><a href="./aspirin.html">Aspirin</a><a class="ghost">Penicillin (soon)</a></div>
+      <div class="fcol"><strong>Research</strong><a href="#research">Findings</a><a class="ghost">Whitepaper (soon)</a></div>
+      <div class="fcol"><strong>Contact</strong><a class="ghost">hello@medchem.example</a><a class="ghost">Join beta</a></div>
+      <div class="fcol"><strong>As featured in</strong><a class="ghost">ACS Education (demo)</a><a class="ghost">JCE (demo)</a></div>
+    </div>
+    <div class="container" style="padding:0 0 24px; opacity:.65">© 2025 MedChem Portal</div>
+  </footer>
+
+  <!-- Onboarding Overlay (first visit) -->
+  <div class="overlay" id="overlay">
+    <div class="tour">
+      <h3>Welcome. Quick tour?</h3>
+      <div class="steps">
+        <div>1) Pick a drug from the cabinet or library.</div>
+        <div>2) Meet Sam, your lab partner in time.</div>
+        <div>3) Start discovering molecular secrets.</div>
+      </div>
+      <div class="actions">
+        <button class="btn light" id="skip">Skip tour</button>
+        <button class="btn primary" id="startNow">Start the Journey</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Parallax accent
+  const parallax = document.querySelector('.parallax');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY * 0.2;
+    parallax.style.backgroundPosition = `50% ${y}px`;
+  });
+
+  // Sam backstory tooltip (simple)
+  const samPortrait = document.getElementById('samPortrait');
+  samPortrait.addEventListener('click', ()=> alert("Sam’s backstory: curious, kind, and fearless about asking 'why'. Sam time-travels with you to help scientists solve real problems."));
+
+  // Onboarding overlay (first visit only)
+  const overlay = document.getElementById('overlay');
+  const seen = localStorage.getItem('tour_seen');
+  if(!seen){
+    overlay.style.display = 'flex';
+  }
+  document.getElementById('skip').addEventListener('click', ()=>{
+    overlay.style.display = 'none';
+    localStorage.setItem('tour_seen','1');
+  });
+  document.getElementById('startNow').addEventListener('click', ()=>{
+    localStorage.setItem('tour_seen','1');
+    window.location.href = './aspirin.html';
+  });
+</script>
 </body>
 </html>
