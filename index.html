@@ -12,6 +12,9 @@
   <script src="https://unpkg.com/3dmol/build/3Dmol-min.js"></script>
   <style>
     body{background:#0b0f19;color:#e9eef5}
+    <!-- Scene Progress -->
+<div id="sceneProgress" style="position:fixed;top:0;left:0;height:4px;width:0;background:#7dd3fc;z-index:2000;box-shadow:0 0 10px #7dd3fc;"></div>
+
     .hero{background: radial-gradient(1200px 600px at 20% -20%, #1b2852, transparent), radial-gradient(800px 400px at 100% 0, #16233f, transparent);}
     .glass{background: rgba(255,255,255,0.06); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;}
     .act-title{letter-spacing:.06em; text-transform:uppercase; font-weight:700; color:#98c1ff}
@@ -24,6 +27,23 @@
     .pill-tabs .nav-link.active{background:#1b2852}
     .viewer{height:420px;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
     .section{scroll-margin-top:80px}
+    .section h2, .section .h3, .section .h4 {
+  transform: translateY(8px);
+  opacity: 0;
+  transition: all .6s ease;
+}
+.section:has(h2), .section:has(.h3), .section:has(.h4) {}
+/* reveal on view */
+.section {
+  view-timeline-name: --reveal;
+}
+.section h2, .section .h3, .section .h4 {
+  animation: reveal both ease .7s;
+  animation-timeline: --reveal;
+  animation-range: entry 20% cover 30%;
+}
+@keyframes reveal { from {opacity:0; transform:translateY(8px)} to {opacity:1; transform:translateY(0)} }
+
   </style>
 </head>
 <body>
@@ -238,5 +258,66 @@
     });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+  // Smooth scroll for in-page links (nav clicks)
+  document.querySelectorAll('a.nav-link[href^="#"]').forEach(a=>{
+    a.addEventListener('click', e=>{
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  // Scene list and helpers
+  const scenes = Array.from(document.querySelectorAll('section[data-scene]'));
+  const progress = document.getElementById('sceneProgress');
+
+  function activeSceneIndex() {
+    let idx = 0;
+    const top = window.scrollY + window.innerHeight * 0.33;
+    scenes.forEach((sec,i)=>{
+      const r = sec.getBoundingClientRect();
+      const y = r.top + window.scrollY;
+      if (y <= top) idx = i;
+    });
+    return idx;
+  }
+
+  function scrollToScene(i) {
+    const clamped = Math.max(0, Math.min(i, scenes.length-1));
+    scenes[clamped].scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  // Update progress on scroll
+  function updateProgress() {
+    const idx = activeSceneIndex();
+    const pct = ((idx) / (scenes.length - 1)) * 100;
+    progress.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress);
+  document.addEventListener('DOMContentLoaded', updateProgress);
+
+  // Keyboard navigation: Up/Down or PgUp/PgDn to change scenes
+  document.addEventListener('keydown', (e)=>{
+    if (['ArrowDown','PageDown'].includes(e.key)) {
+      e.preventDefault();
+      scrollToScene(activeSceneIndex()+1);
+    }
+    if (['ArrowUp','PageUp'].includes(e.key)) {
+      e.preventDefault();
+      scrollToScene(activeSceneIndex()-1);
+    }
+    if (e.key === 'Home') {
+      e.preventDefault();
+      scrollToScene(0);
+    }
+    if (e.key === 'End') {
+      e.preventDefault();
+      scrollToScene(scenes.length-1);
+    }
+  });
+</script>
+
 </body>
 </html>
