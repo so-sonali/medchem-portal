@@ -1,69 +1,258 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MedChem Portal — Medicine Shelf</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Aspirin Story — Interactive Molecular Theater</title>
 <style>
   :root{
-    --discovery:#00ff88; --danger:#ff4757; --mystery:#7c3aed; --success:#0ea5e9; --bg:#0b1220; --glass:rgba(255,255,255,0.08);
+    --discovery:#00ff88; --danger:#ff4757; --mystery:#7c3aed; --success:#0ea5e9;
+    --bg:#0b1220; --panel:rgba(255,255,255,.06); --stroke:rgba(255,255,255,.12);
   }
   *{box-sizing:border-box}
-  body{margin:0;background:radial-gradient(1200px 600px at 70% -20%, #1b2a55 0%, #0b1220 40%, #050912 100%); color:#e8f1ff; font:16px/1.5 system-ui,Segoe UI,Inter,Arial}
-  header{padding:28px 24px; display:flex; align-items:center; justify-content:space-between}
-  .brand{font-weight:800; letter-spacing:.3px; font-size:20px}
-  .hero{display:grid; place-items:center; padding:18px}
-  .card{width:min(980px, 94vw); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,.45)}
-  h1{margin:6px 0 10px; font-size:28px}
-  p.lede{opacity:.9; margin:0 0 14px}
-  .shelf{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-top:18px}
-  .bottle{position:relative; padding:18px; border-radius:18px; background:var(--glass); border:1px solid rgba(255,255,255,.08); cursor:pointer; transition:transform .15s ease, box-shadow .15s ease}
-  .bottle:hover{transform:translateY(-2px); box-shadow:0 10px 30px rgba(0,0,0,.35)}
-  .pill{width:58px; height:58px; border-radius:16px; background:linear-gradient(135deg,#ffffff,#e6f7ff); box-shadow:inset 0 0 0 2px rgba(0,0,0,.05)}
-  .tag{margin-top:10px; font-weight:700}
-  .badge{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:rgba(0,255,136,.12); color:var(--discovery); font-weight:600; font-size:12px}
-  footer{opacity:.6; text-align:center; padding:30px 0 40px}
-  a{color:inherit; text-decoration:none}
+  body{margin:0; background:radial-gradient(1200px 600px at 60% -10%, #18294c 0%, #0b1220 40%, #050912 100%); color:#eaf2ff; font:16px/1.5 system-ui,Segoe UI,Inter,Arial}
+  a{color:inherit;text-decoration:none}
+  header{display:flex; align-items:center; justify-content:space-between; padding:16px 18px}
+  .back{opacity:.8}
+  .wrap{max-width:1100px; margin:0 auto; padding:10px 18px 24px}
+  .stage{display:grid; grid-template-columns:1.2fr .8fr; gap:16px}
+  .panel{background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border:1px solid var(--stroke); border-radius:18px; padding:16px; box-shadow:0 18px 50px rgba(0,0,0,.45)}
+  h1{font-size:24px; margin:6px 0 8px}
+  .subtle{opacity:.85}
+  .flex{display:flex; gap:10px; align-items:center}
+  .kid{width:72px; height:72px; border-radius:14px; background:
+    radial-gradient(30px 30px at 30% 30%, #ffd6a8, #ffc07a),
+    linear-gradient(180deg, #ffe2bf, #ffcf8b);
+    box-shadow:0 10px 30px rgba(0,0,0,.35); position:relative}
+  .kid::after{content:"🧪"; position:absolute; right:-10px; bottom:-10px; font-size:26px}
+  .scene{height:320px; background:radial-gradient(500px 200px at 70% -20%, rgba(124,58,237,.18), transparent 60%); border-radius:14px; display:grid; place-items:center; position:relative; overflow:hidden}
+  .btn{appearance:none; border:none; background:var(--panel); color:#fff; padding:8px 12px; border-radius:12px; border:1px solid var(--stroke); cursor:pointer}
+  .btn.primary{background:linear-gradient(180deg,#1a7b4a,#13633c); border-color:#0d4e2e}
+  .meter{height:16px; background:#111a2e; border:1px solid var(--stroke); border-radius:999px; overflow:hidden}
+  .bar{height:100%; width:40%; background:linear-gradient(90deg, #ff6a6a, #ffc36a, #00ff88); transition:transform .35s ease}
+  .row{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .token-tray{display:flex; gap:8px; flex-wrap:wrap}
+  .token{user-select:none; padding:8px 10px; border-radius:12px; background:rgba(255,255,255,.08); border:1px solid var(--stroke); cursor:grab}
+  .token[data-type="acetyl"]{background:rgba(0,255,136,.12); color:var(--discovery); border-color:rgba(0,255,136,.25)}
+  .token[data-type="methyl"]{background:rgba(255,255,255,.07)}
+  .token[data-type="sulfonyl"]{background:rgba(255,71,87,.14); color:#ffc9cf; border-color:rgba(255,71,87,.28)}
+  .hint{font-size:13px; opacity:.8}
+  /* SVG molecule */
+  svg{max-width:560px; width:96%; height:auto}
+  .hotspot{fill:#ffffff; stroke:#99a6ff; stroke-width:2; filter:drop-shadow(0 0 6px rgba(0,128,255,.25))}
+  .hotspot.glow{filter:drop-shadow(0 0 10px rgba(0,255,136,.55))}
+  .bond{stroke:#cfe2ff; stroke-width:3}
+  .label{font:12px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill:#a9b8ff}
+  .status{font-size:13px; opacity:.85}
+  .toast{position:fixed; right:16px; bottom:16px; background:rgba(0,0,0,.7); color:#fff; padding:8px 12px; border-radius:10px; opacity:0; transform:translateY(8px); transition:.25s}
+  .toast.show{opacity:1; transform:translateY(0)}
+  /* COX pocket vignette */
+  .pocket{position:absolute; inset:0; display:none; place-items:center; backdrop-filter:blur(2px)}
+  .pocket .bubble{width:min(560px,90%); background:linear-gradient(180deg, rgba(14,165,233,.2), rgba(124,58,237,.22)); border:1px solid rgba(255,255,255,.2); border-radius:16px; padding:16px; text-align:center}
+  .mini-enzyme{height:120px; background:radial-gradient(200px 60px at 50% 0%, rgba(14,165,233,.32), transparent 70%); border:1px dashed rgba(255,255,255,.25); border-radius:14px; display:grid; place-items:center; margin:10px 0 4px}
 </style>
 </head>
 <body>
-  <header>
-    <div class="brand">MedChem Portal</div>
-    <div class="badge">🎯 Learn by Discovery</div>
+  <header class="wrap">
+    <a class="back" href="./index.html">← Back to Shelf</a>
+    <div>Badge progress: <span id="badgeCount">0</span> ⭐</div>
   </header>
 
-  <section class="hero">
-    <div class="card">
-      <h1>Your medicine cabinet is a chemistry lab</h1>
-      <p class="lede">Pick a bottle. Time-travel into its discovery. Tinker with the molecule. Watch the consequences.</p>
-
-      <div class="shelf">
-        <a class="bottle" href="./aspirin.html" title="Aspirin">
-          <div class="pill" aria-hidden="true"></div>
-          <div class="tag">Aspirin</div>
-          <small>COX inhibitor • pain • fever</small>
-        </a>
-
-        <div class="bottle" title="Coming soon">
-          <div class="pill" style="background:linear-gradient(135deg,#ffd9d9,#ffe6e6)"></div>
-          <div class="tag">Ibuprofen</div>
-          <small>Coming soon</small>
-        </div>
-
-        <div class="bottle" title="Coming soon">
-          <div class="pill" style="background:linear-gradient(135deg,#e4ffe6,#d9ffe0)"></div>
-          <div class="tag">Penicillin</div>
-          <small>Coming soon</small>
-        </div>
-
-        <div class="bottle" title="Coming soon">
-          <div class="pill" style="background:linear-gradient(135deg,#fff3d6,#ffe9b8)"></div>
-          <div class="tag">Insulin</div>
-          <small>Coming soon</small>
+  <main class="wrap">
+    <div class="panel" style="margin-bottom:12px">
+      <div class="flex">
+        <div class="kid" aria-hidden="true"></div>
+        <div>
+          <div class="subtle">Kid Scientist (2025):</div>
+          <h1>“Mom gave me aspirin… but how does a tiny pill stop pain?”</h1>
+          <button class="btn primary" id="toLab">Enter time machine → 1897</button>
         </div>
       </div>
     </div>
-  </section>
-  <footer>© 2025 MedChem Portal</footer>
+
+    <section class="stage">
+      <!-- Left: Interactive lab bench -->
+      <div class="panel">
+        <div class="row" style="margin-bottom:8px">
+          <strong>Hoffmann’s Lab — Optimize the molecule</strong>
+          <div class="status" id="status">Current: Salicylic acid (phenolic –OH exposed)</div>
+        </div>
+        <div class="scene" id="scene">
+          <!-- Simple SVG salicylic acid sketch with a hotspot “phenolic –OH” -->
+          <svg viewBox="0 0 320 220" id="molSvg" aria-label="Molecule">
+            <!-- Benzene ring -->
+            <g stroke-linecap="round" stroke-linejoin="round">
+              <line x1="100" y1="60"  x2="160" y2="60"  class="bond"/>
+              <line x1="160" y1="60"  x2="190" y2="110" class="bond"/>
+              <line x1="190" y1="110" x2="160" y2="160" class="bond"/>
+              <line x1="160" y1="160" x2="100" y2="160" class="bond"/>
+              <line x1="100" y1="160" x2="70"  y2="110" class="bond"/>
+              <line x1="70"  y1="110" x2="100" y2="60"  class="bond"/>
+            </g>
+            <!-- Carboxyl at C1 -->
+            <line x1="160" y1="160" x2="210" y2="180" class="bond"/>
+            <text x="216" y="184" class="label">COOH</text>
+            <!-- Phenolic OH hotspot at C2 (top edge) -->
+            <circle id="ohSpot" cx="160" cy="60" r="10" class="hotspot" />
+            <text x="174" y="64" class="label">–OH</text>
+          </svg>
+
+          <!-- Drag tokens -->
+          <div class="token-tray" style="position:absolute; left:10px; bottom:10px;">
+            <div class="token" draggable="true" data-type="acetyl">Acetyl</div>
+            <div class="token" draggable="true" data-type="methyl">Methyl</div>
+            <div class="token" draggable="true" data-type="sulfonyl">Sulfonyl</div>
+          </div>
+
+          <!-- COX pocket overlay -->
+          <div class="pocket" id="pocket">
+            <div class="bubble">
+              <strong>COX-1 Active Site</strong>
+              <div class="mini-enzyme">Ser530 ⚙︎ ready</div>
+              <button class="btn" id="bindBtn">Bind aspirin → acetylate Ser530</button>
+              <div class="hint">Irreversible “lock”: prostaglandins ↓ → pain/fever ↓</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <div style="min-width:210px">
+            <div class="subtle">Stomach-friendliness</div>
+            <div class="meter" aria-label="Stomach friendliness meter">
+              <div class="bar" id="giBar" style="transform:translateX(-40%)"></div>
+            </div>
+          </div>
+          <div class="hint">Mask the phenolic –OH to improve GI tolerance (teaching heuristic).</div>
+          <div>
+            <button class="btn" id="resetBtn">Reset</button>
+            <button class="btn" id="pocketBtn" disabled>See COX Binding</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Dialogue + goals -->
+      <div class="panel">
+        <strong>Story & Goals</strong>
+        <ol style="margin-top:6px">
+          <li>❗ Salicylic acid helps pain but irritates stomach (phenolic –OH exposed).</li>
+          <li>🧩 Try modifications. If you <em>acetylate</em> the –OH → watch the meter improve.</li>
+          <li>🧠 Then fly into the enzyme and lock COX-1 via Ser530.</li>
+        </ol>
+        <hr style="border-color:rgba(255,255,255,.08)">
+        <div id="dialogue" class="subtle">
+          Hoffmann: “If only we could disguise that troublesome group…”
+        </div>
+        <div style="margin-top:12px">
+          <button class="btn primary" id="claimBadge" disabled>Claim badge ⭐ COX Inhibitor Apprentice</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+  // Tiny helper UI
+  const $ = sel => document.querySelector(sel);
+  const toast = (msg)=>{ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1300); };
+
+  // Scene state
+  let masked = false;  // phenolic –OH masked?
+  let bound  = false;  // COX locked?
+  let badges = 0;
+
+  const giBar = $("#giBar");
+  const status = $("#status");
+  const ohSpot = $("#ohSpot");
+  const pocket = $("#pocket");
+  const pocketBtn = $("#pocketBtn");
+  const bindBtn = $("#bindBtn");
+  const claimBadge = $("#claimBadge");
+  const badgeCount = $("#badgeCount");
+
+  // Accessibility: keyboard “drop” onto hotspot by focusing token then pressing Enter
+  document.querySelectorAll(".token").forEach(tok=>{
+    tok.setAttribute("tabindex","0");
+    tok.addEventListener("keydown",(e)=>{
+      if(e.key==="Enter"){ attemptApply(tok.dataset.type); }
+    });
+  });
+
+  // Drag & drop
+  document.querySelectorAll(".token").forEach(tok=>{
+    tok.addEventListener("dragstart", (e)=> e.dataTransfer.setData("text/plain", tok.dataset.type));
+  });
+  ohSpot.addEventListener("dragover", (e)=>{ e.preventDefault(); ohSpot.classList.add("glow"); });
+  ohSpot.addEventListener("dragleave", ()=> ohSpot.classList.remove("glow"));
+  ohSpot.addEventListener("drop", (e)=>{
+    e.preventDefault();
+    ohSpot.classList.remove("glow");
+    const type = e.dataTransfer.getData("text/plain");
+    attemptApply(type);
+  });
+
+  function attemptApply(type){
+    if(masked){ toast("Already modified. Try the pocket!"); return; }
+    if(type==="acetyl"){
+      masked = true;
+      status.textContent = "Modified: Acetylsalicylic acid (phenolic –OH masked)";
+      giBar.style.transform = "translateX(-5%)"; // bump meter towards green
+      ohSpot.setAttribute("r","12");
+      ohSpot.style.fill = "#a6ffda";
+      $("#dialogue").textContent = "Kid: “We masked the –OH. Try binding to COX!”";
+      pocketBtn.disabled = false;
+      toast("✅ Acetylation successful");
+      return;
+    }
+    if(type==="methyl" || type==="sulfonyl"){
+      giBar.style.transform = "translateX(-30%)";
+      toast("⚠️ That didn’t solve the stomach irritation. Try acetyl.");
+      return;
+    }
+    toast("Hmm, nothing happened.");
+  }
+
+  // Pocket view & binding
+  $("#pocketBtn").addEventListener("click", ()=>{
+    if(!masked){ toast("Try acetylation first!"); return; }
+    pocket.style.display = "grid";
+  });
+  $("#toLab").addEventListener("click", ()=>{
+    toast("Time machine engaged ⚡");
+    // cute mini transition: pulse hotspot
+    ohSpot.animate([{transform:"scale(1)"},{transform:"scale(1.15)"},{transform:"scale(1)"}], {duration:600});
+  });
+  $("#resetBtn").addEventListener("click", resetScene);
+  $("#bindBtn").addEventListener("click", ()=>{
+    if(bound) return;
+    bound = true;
+    pocket.querySelector(".mini-enzyme").textContent = "Ser530 ✅ acetylated (irreversible lock)";
+    pocket.style.display = "none";
+    $("#dialogue").textContent = "Hoffmann: “We did it! A safer, effective pain reliever.”";
+    giBar.style.transform = "translateX(0%)";
+    claimBadge.disabled = false;
+    toast("🔒 COX-1 locked");
+  });
+  $("#claimBadge").addEventListener("click", ()=>{
+    if(!bound) return toast("Bind in the pocket first!");
+    badges += 1;
+    badgeCount.textContent = badges;
+    claimBadge.disabled = true;
+    toast("⭐ Badge earned");
+  });
+
+  function resetScene(){
+    masked=false; bound=false;
+    giBar.style.transform = "translateX(-40%)";
+    status.textContent = "Current: Salicylic acid (phenolic –OH exposed)";
+    ohSpot.setAttribute("r","10");
+    ohSpot.style.fill = "#ffffff";
+    pocket.style.display="none";
+    pocketBtn.disabled = true;
+    claimBadge.disabled = true;
+    $("#dialogue").textContent = "Hoffmann: “If only we could disguise that troublesome group…”";
+    toast("Scene reset");
+  }
+</script>
 </body>
 </html>
