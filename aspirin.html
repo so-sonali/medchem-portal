@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Aspirin — Narrative Med Chem</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- 3Dmol for molecules -->
+  <script src="https://unpkg.com/3dmol/build/3Dmol-min.js"></script>
+
+  <style>
+    body{background:#0b0f19;color:#e9eef5}
+    .hero{background: radial-gradient(1200px 600px at 20% -20%, #1b2852, transparent),
+                       radial-gradient(800px 400px at 100% 0, #16233f, transparent);}
+    .glass{background: rgba(255,255,255,0.06); backdrop-filter: blur(6px);
+           border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;}
+    .act-title{letter-spacing:.06em; text-transform:uppercase; font-weight:700; color:#98c1ff}
+    .viewer{height:420px;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
+    .section{scroll-margin-top:80px}
+    .footer{color:#a7b1c2}
+    a.link{color:#9fe7ff; text-decoration:none}
+    a.link:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="navbar navbar-dark navbar-expand-md bg-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html"><i class="bi bi-capsule"></i> Everyday Pharmacy</a>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+      <div id="nav" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#act1">Act I</a></li>
+          <li class="nav-item"><a class="nav-link" href="#act2">Act II</a></li>
+          <li class="nav-item"><a class="nav-link" href="#act3">Act III</a></li>
+          <li class="nav-item"><a class="nav-link" href="#act4">Act IV</a></li>
+          <li class="nav-item"><a class="nav-link" href="#notes">Notes</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero py-5">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <h1 class="display-5 fw-bold">Aspirin — The Accidental Wonder Drug</h1>
+          <p class="lead">Watch the problem. Make the fix. See the consequences.</p>
+          <div class="d-flex gap-2 flex-wrap">
+            <a href="#act1" class="btn btn-primary btn-lg"><i class="bi bi-play-fill"></i> Start the story</a>
+            <a class="btn btn-outline-light btn-lg" href="https://so-sonali.github.io/medchem-hub/aspirin/learn.html" target="_blank">
+              <i class="bi bi-journal-bookmark"></i> Scientific notes
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div id="aspirin3d" class="viewer glass"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ACT I -->
+  <section id="act1" class="section py-5">
+    <div class="container">
+      <p class="act-title">Act I — The Problem</p>
+      <div class="glass p-4">
+        <h2 class="h3">Relief… and pain</h2>
+        <p>Salicylic acid eases pain, but its phenolic <strong>–OH</strong> irritates the stomach.</p>
+        <p class="text-secondary">We’ll fix it in Act II.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT II -->
+  <section id="act2" class="section py-5">
+    <div class="container">
+      <p class="act-title">Act II — The Breakthrough</p>
+      <div class="glass p-4">
+        <h2 class="h3">Hoffmann’s choice (1897)</h2>
+        <p>Mask the phenolic –OH by <strong>acetylation</strong> → acetylsalicylic acid (aspirin).</p>
+        <ul class="mb-0">
+          <li>Masks acidity → tolerability ↑</li>
+          <li>Acts as a prodrug → hydrolyzes in vivo</li>
+          <li>Enables COX acetylation → analgesia, antiplatelet</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT III -->
+  <section id="act3" class="section py-5">
+    <div class="container">
+      <p class="act-title">Act III — The Consequences</p>
+      <div class="glass p-4">
+        <h2 class="h4">History forks here</h2>
+        <p class="mb-0">Higher dose? Buffered tablet? Patent acetylation? We’ll simulate choices next.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACT IV -->
+  <section id="act4" class="section py-5">
+    <div class="container">
+      <p class="act-title">Act IV — Reflection</p>
+      <div class="glass p-4">
+        <h2 class="h4">Ethics & impact</h2>
+        <ul class="mb-0">
+          <li>Access vs. patents for essential medicines</li>
+          <li>Population bleeding risk vs. cardiovascular benefit</li>
+          <li>How a cheap pill changed global health</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES -->
+  <section id="notes" class="section pb-5">
+    <div class="container">
+      <p class="act-title">Notes & Deeper Study</p>
+      <div class="glass p-4">
+        <p class="mb-1">Read the structured notes:</p>
+        <a class="link" href="https://so-sonali.github.io/medchem-hub/aspirin/learn.html" target="_blank">Aspirin — learn page ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer py-5">
+    <div class="container small">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <div class="glass p-3">
+            <strong>Narrative Med Chem.</strong> Stories → decisions → mechanisms → ethics.
+          </div>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <div class="glass p-3">Educational content only. Not medical advice.</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Load PubChem Aspirin (CID 2244) in 3D
+    (async () => {
+      try {
+        const el = document.getElementById("aspirin3d");
+        const viewer = $3Dmol.createViewer(el, {backgroundColor: "white"});
+        const resp = await fetch("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/CID/2244/SDF?record_type=3d");
+        const sdf = await resp.text();
+        viewer.addModel(sdf, "sdf");
+        viewer.setStyle({}, {stick:{radius:0.15}, sphere:{scale:0.22}});
+        viewer.addStyle({elem:"O"}, {sphere:{scale:0.26}}); // highlight oxygens
+        viewer.zoomTo(); viewer.render();
+      } catch(e) {
+        console.error(e);
+      }
+    })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
